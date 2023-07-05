@@ -6,15 +6,10 @@ import useSWR from "swr";
 const URL = "https://api.wheretheiss.at/v1/satellites/25544";
 
 export default function ISSTracker() {
-  const [coords, setCoords] = useState({
-    longitude: 0,
-    latitude: 0,
+  const { data, error, isLoading, mutate } = useSWR(URL, {
+    refreshInterval: 5000,
   });
-  const { data, error, isLoading } = useSWR(URL, { refreshInterval: 5000 });
-
-  async function getISSCoords() {
-    setCoords({ longitude: data.longitude, latitude: data.latitude });
-  }
+  console.log(data);
 
   if (isLoading) {
     return <h1>Loading ...</h1>;
@@ -25,11 +20,11 @@ export default function ISSTracker() {
 
   return (
     <main>
-      <Map longitude={coords.longitude} latitude={coords.latitude} />
+      <Map longitude={data.longitude} latitude={data.latitude} />
       <Controls
-        longitude={coords.longitude}
-        latitude={coords.latitude}
-        onRefresh={getISSCoords}
+        longitude={data.longitude}
+        latitude={data.latitude}
+        onRefresh={() => mutate()}
       />
     </main>
   );
