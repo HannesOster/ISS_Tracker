@@ -10,21 +10,12 @@ export default function ISSTracker() {
     longitude: 0,
     latitude: 0,
   });
-  const { data, error, isLoading } = useSWR(URL);
+  const { data, error, isLoading } = useSWR(URL, { refreshInterval: 5000 });
 
   async function getISSCoords() {
     setCoords({ longitude: data.longitude, latitude: data.latitude });
   }
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      getISSCoords();
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
   if (isLoading) {
     return <h1>Loading ...</h1>;
   }
